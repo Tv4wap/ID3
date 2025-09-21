@@ -15,13 +15,13 @@
                     
                     
                     const iframe = document.getElementById('stream-iframe');
-                    if (streamInfo.m3u8) {
+                    if (streamInfo.mpd) {
                     const mpd= encodeURIComponent(streamInfo.mpd);
                            const key= encodeURIComponent(streamInfo.key);
-                           const 
+                           [k1, k2] = key.split(':'); 
                            
                      
- iframe.src =`https://tv4wap.github.io/p3/?mpd=${mpd}`;
+ iframe.src =`https://tv4wap.github.io/p3/?mpd=${mpd}&keyId=${k1}&key=${k2}`;
                     } 
                 });
         });
