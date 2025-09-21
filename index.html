@@ -16,9 +16,7 @@
                     
                     const iframe = document.getElementById('stream-iframe');
                     if (streamInfo.mpd) {
-                    const mpd= encodeURIComponent(streamInfo.mpd);
-                           const key= encodeURIComponent(streamInfo.key);
-                           [k1, k2] = key.split(':'); 
+                    const mpd= encodeURIComponent(streamInfo.mpd);[k1,k2] = streamInfo.key.split(':'); 
                            
                      
  iframe.src =`https://tv4wap.github.io/p3/?mpd=${mpd}&keyId=${k1}&key=${k2}`;
