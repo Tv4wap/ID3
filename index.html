@@ -1,0 +1,112 @@
+<head>
+  <meta charset="UTF-8">
+  <title>JOIN TV4WAP LIVE4WAP </title>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <style>
+    body { margin: 0; padding: 0; background: #000; }
+    video { width: 100%; height: 100vh; object-fit: contain; }
+  </style>
+</head>
+
+<video id="player" controls="" playsinline="" muted="" autoplay="" poster="" src=""></video>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+<script>
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  const source = getQueryParam('url');
+  const video = document.getElementById('player');
+
+  if (!source) {
+    document.body.innerHTML = '<h2 style="color:white;text-align:center;padding-top:20%;">Missing "url" parameter in query</h2>';
+    throw new Error('No stream URL provided');
+  }
+
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(source);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      const availableLevels = hls.levels;
+      const availableQualities = Array.from(new Set(availableLevels.map(l => l.height))).sort((a, b) => a - b); // Ascending
+
+      const qualityOptions = [...availableQualities, 'auto']; // Auto at the end
+
+      let currentQuality = 'auto';
+
+      const player = new Plyr(video, {
+        autoplay: true,
+        muted: true,
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+        settings: ['quality'],
+        quality: {
+          default: 'auto',
+          options: qualityOptions,
+          forced: true,
+          onChange: (quality) => {
+            if (quality === 'auto') {
+              hls.currentLevel = -1;
+              currentQuality = 'auto';
+            } else {
+              const levelIndex = hls.levels.findIndex(l => l.height === parseInt(quality));
+              hls.currentLevel = levelIndex;
+              currentQuality = parseInt(quality);
+            }
+          }
+        }
+      });
+
+      player.config.i18n.quality = {
+        auto: 'Auto',
+        ...Object.fromEntries(availableQualities.map(q => [q, `${q}p`]))
+      };
+
+      Object.defineProperty(player, 'quality', {
+        get: () => currentQuality,
+        set: (newQuality) => {
+          player.config.quality.onChange(newQuality);
+        }
+      });
+
+      player.quality = 'auto';
+
+      // Autoplay + Unmute logic
+      video.muted = false;
+      video.play().catch(() => {
+        const clickHandler = () => {
+          video.play();
+          video.muted = false;
+          document.removeEventListener('click', clickHandler);
+        };
+        document.addEventListener('click', clickHandler);
+      });
+    });
+
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = source;
+    const player = new Plyr(video, {
+      autoplay: true,
+      muted: true,
+      controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+    });
+    video.addEventListener('loadedmetadata', () => {
+      video.muted = false;
+      video.play().catch(() => {
+        document.addEventListener('click', function clickHandler() {
+          video.play();
+          video.muted = false;
+          document.removeEventListener('click', clickHandler);
+        });
+      });
+    });
+  } else {
+    alert("This browser doesn't support HLS playback.");
+  }
+</script>
