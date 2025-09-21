@@ -1,21 +1,20 @@
-<head>
+
+<!doctype html>
+<html lang="en">
+ <head>
   <meta charset="UTF-8">
-  <title>JOIN TV4WAP LIVE4WAP </title>
+  <title>Plyr Player</title>
   <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
   <style>
     body { margin: 0; padding: 0; background: #000; }
     video { width: 100%; height: 100vh; object-fit: contain; }
   </style>
-</head>
-
-<video autoplay="yes" oncanplay="this.muted=true"  id="player" controls preload="metadata" poster="https://blogger.googleusercontent.com/img/a/AVvXsEiGqaZeRBZ6Y7yV5ZYSRiNRhBa5q9_EMx7R5TJcHd3XJwwHh2YhNOGt76Y4vEcUIjvIaA7W-Tw1RyMLP-4WZwVHA4mk18zwXl7HdSL5WabprIasDOWJO7jpL0zTQB4p_y7X0Rv0xwe-cJ-GvxofAgeRp2FIiNgB90n_b8Cqw0sAaZqVhJg_fi9UyfSO8KY" controls></video>
-<img id="myLogo" src="https://blogger.googleusercontent.com/img/a/AVvXsEiQ92h-ekVYskxW9qCgLvpQVMpAs4tqUQXnH9nDi37JW5B95V7Cq2Rz_mlGO68vTZmA2H5Qp4p8B0I9EUlW-6W1aVOZgITWN3xyE65Hd6G5G_D6HJFxiuXJaK-wMfYD0PiiUR9EBodkzuPH0-ubAMJQK_3F3rpDMEIJKCxlEzNZucpRzsumlBFXWqinGOw=s885">
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-
-<script>
+ </head>
+ <body>
+  <video id="player" controls playsinline muted autoplay poster=""></video>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script>
   function getQueryParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
@@ -111,3 +110,5 @@
     alert("This browser doesn't support HLS playback.");
   }
 </script>
+ </body>
+</html>
